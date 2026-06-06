@@ -1,5 +1,5 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.44.0",
+  "dart.flutterSdkPath": ".fvm/versions/3.44.1",
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "Dart-Code.dart-code",
   "files.insertFinalNewline": true,

@@ -1,0 +1,76 @@
+name: Bug report
+description: Something isn't working as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. Please fill out each section below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps that reliably reproduce the issue.
+      placeholder: |
+        1. Add the following to `dart_husky.yaml` …
+        2. Run `dart run dart_husky install`
+        3. Make a commit
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include the full error output / stack trace if available.
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: dart_husky.yaml
+      description: Paste your `dart_husky.yaml` (redact anything sensitive).
+      render: yaml
+
+  - type: input
+    id: dart_husky_version
+    attributes:
+      label: dart_husky version
+      placeholder: "1.2.1"
+    validations:
+      required: true
+
+  - type: input
+    id: dart_version
+    attributes:
+      label: Dart / Flutter SDK version
+      description: Output of `dart --version` or `flutter --version`.
+      placeholder: "Dart SDK version: 3.x.x"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "macOS 15, Ubuntu 24.04, Windows 11…"
+    validations:
+      required: true
