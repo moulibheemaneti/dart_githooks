@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1](https://github.com/moulibheemaneti/dart_husky/compare/dart_husky-v1.4.0...dart_husky-v1.4.1) (2026-06-21)
+
+
+### Miscellaneous
+
+* update flutter version to 3.44.2 ([#9](https://github.com/moulibheemaneti/dart_husky/issues/9)) ([b1e369c](https://github.com/moulibheemaneti/dart_husky/commit/b1e369c8d4ef1948b313208ab9c8188da2141393))
+
 ## [1.4.0](https://github.com/moulibheemaneti/dart_husky/compare/v1.2.2...dart_husky-v1.4.0) (2026-06-21)
 
 
