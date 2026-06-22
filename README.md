@@ -42,7 +42,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  dart_husky: ^1.2.1
+  dart_husky: ^1.5.0
 ```
 
 Install dependencies and set up hooks:
