@@ -26,7 +26,8 @@ class ListCommand {
       );
 
       for (final cmd in hookConfig.commands.entries) {
-        print('    • ${cmd.key}: ${cmd.value.run}');
+        final desc = cmd.value.run ?? 'preset: ${cmd.value.preset}';
+        print('    • ${cmd.key}: $desc');
       }
       print('');
     }

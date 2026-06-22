@@ -5,6 +5,8 @@ import 'package:glob/glob.dart';
 import '../config/config_model.dart';
 import '../config/config_parser.dart';
 import '../utils/git_utils.dart';
+import '../utils/melos_utils.dart';
+import '../utils/process_utils.dart';
 import 'commit_msg_validator.dart';
 
 class HookRunner {
@@ -31,15 +33,13 @@ class HookRunner {
       await _runCommitMsgHook(hookConfig, arg);
     } else {
       // fetch staged files only if needed — glob filtering or staged_only is active
-      final needsStagedFiles =
-          config.globalConfig.stagedOnly ||
+      final needsStagedFiles = config.globalConfig.stagedOnly ||
           hookConfig.commands.values.any(
             (c) => c.stagedOnly == true || c.glob != null,
           );
 
-      final stagedFiles = needsStagedFiles
-          ? await GitUtils.getStagedFiles()
-          : <String>[];
+      final stagedFiles =
+          needsStagedFiles ? await GitUtils.getStagedFiles() : <String>[];
 
       if (hookConfig.parallel) {
         await _runParallel(
@@ -139,7 +139,16 @@ class HookRunner {
     DartHuskyConfig globalConfig,
     List<String> stagedFiles,
   ) async {
-    // check glob filter first — skip if no staged files match
+    if (config.preset != null) {
+      await _runPreset(name, config, globalConfig, stagedFiles);
+      return;
+    }
+
+    if (config.run == null) {
+      print('  ❌ "$name" has no run command or preset.');
+      exit(1);
+    }
+
     if (config.glob != null) {
       final matcher = Glob(config.glob!);
       final hasMatch = stagedFiles.any((f) => matcher.matches(f));
@@ -151,13 +160,12 @@ class HookRunner {
 
     print('  ▶ Running "$name"...');
 
-    // resolve staged_only — command level overrides global
     final useStagedOnly = config.stagedOnly ?? globalConfig.stagedOnly;
 
-    var commandToRun = config.run;
+    var commandToRun = config.run!;
 
     if (useStagedOnly && stagedFiles.isNotEmpty) {
-      commandToRun = '${config.run} ${stagedFiles.join(' ')}';
+      commandToRun = '${config.run!} ${stagedFiles.join(' ')}';
     } else if (useStagedOnly && stagedFiles.isEmpty) {
       print('  ⏭️  "$name" skipped — no staged files.');
       return;
@@ -172,6 +180,72 @@ class HookRunner {
     if (result.stdout.toString().isNotEmpty) {
       print(result.stdout);
     }
+
+    if (result.exitCode != 0) {
+      print('  ❌ "$name" failed:');
+      print(result.stderr);
+      exit(result.exitCode);
+    }
+
+    print('  ✅ "$name" passed');
+  }
+
+  static Future<void> _runPreset(
+    String name,
+    CommandConfig config,
+    DartHuskyConfig globalConfig,
+    List<String> stagedFiles,
+  ) async {
+    if (config.preset == 'melos') {
+      await _runMelosPreset(name, config, globalConfig, stagedFiles);
+    } else {
+      print('  ⚠️  Unknown preset "${config.preset}" — skipping.');
+    }
+  }
+
+  static Future<void> _runMelosPreset(
+    String name,
+    CommandConfig config,
+    DartHuskyConfig globalConfig,
+    List<String> stagedFiles,
+  ) async {
+    print('  ▶ Running "$name"...');
+
+    final allPackages = await MelosUtils.listPackages();
+
+    if (allPackages.isEmpty) {
+      print('  ❌ "$name" failed: no melos workspace found. '
+          'Is melos installed and configured?');
+      exit(1);
+    }
+
+    final testCommand = await ProcessUtils.detectTestCommand();
+
+    final useStagedOnly = config.stagedOnly ?? globalConfig.stagedOnly;
+
+    List<String> args;
+
+    if (useStagedOnly) {
+      final affected =
+          MelosUtils.getAffectedPackageNames(allPackages, stagedFiles);
+
+      if (affected.isEmpty) {
+        print('  ⏭️  "$name" skipped — no staged files in any package.');
+        return;
+      }
+
+      final scopeArgs = affected.expand((p) => ['--scope=$p']).toList();
+      args = ['exec', ...scopeArgs, '--', ...testCommand.split(' ')];
+
+      print('  📦 Running tests in: ${affected.join(', ')}');
+    } else {
+      args = ['exec', '--', ...testCommand.split(' ')];
+      print('  📦 Running tests in all packages');
+    }
+
+    final result = await Process.run('melos', args, runInShell: true);
+
+    if (result.stdout.toString().isNotEmpty) print(result.stdout);
 
     if (result.exitCode != 0) {
       print('  ❌ "$name" failed:');

@@ -77,8 +77,8 @@ class HookConfig {
 
 /// Represents one named shell command inside a hook
 class CommandConfig {
-  /// The shell command to execute
-  final String run;
+  /// The shell command to execute — optional if [preset] is set
+  final String? run;
 
   /// Optional glob pattern — only run if matching files are staged
   final String? glob;
@@ -87,8 +87,12 @@ class CommandConfig {
   /// If null, falls back to global dart_husky.staged_only
   final bool? stagedOnly;
 
-  /// Creates a [CommandConfig] with the given run command
-  const CommandConfig({required this.run, this.glob, this.stagedOnly});
+  /// Named preset (e.g. 'melos') — replaces [run] when set
+  /// Exactly one of [run] or [preset] must be provided
+  final String? preset;
+
+  /// Creates a [CommandConfig] with the given run command or preset
+  const CommandConfig({this.run, this.glob, this.stagedOnly, this.preset});
 }
 
 /// Specific to commit-msg hook — uses a preset instead of a shell command

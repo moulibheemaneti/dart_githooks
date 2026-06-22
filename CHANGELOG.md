@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Melos Preset**: Added `melos` preset for shell commands. When `preset: melos` is set, dart_husky runs tests in a melos workspace via `melos exec`. The `staged_only` flag controls scope: `true` runs tests only in packages with staged files; `false` runs all packages. Uses `melos list --json` for package discovery (works with both `melos.yaml` and `melos:` in `pubspec.yaml`). Auto-detects `fvm flutter test`, `flutter test`, or `dart test`.
+
 ## [1.4.1](https://github.com/moulibheemaneti/dart_husky/compare/dart_husky-v1.4.0...dart_husky-v1.4.1) (2026-06-21)
 
 

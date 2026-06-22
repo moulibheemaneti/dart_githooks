@@ -9,6 +9,12 @@ class ConfigParser {
   static const _configFileName = 'dart_husky.yaml';
   static const _globalConfigKey = 'dart_husky';
 
+  /// Parses raw YAML content as a string — useful for tests
+  static GitHooksConfig parseString(String content) {
+    final yaml = loadYaml(content) as YamlMap;
+    return _parseConfig(yaml);
+  }
+
   /// Finds and parses dart_husky.yaml from the project root
   static GitHooksConfig parse() {
     final configFile = _findConfigFile();
@@ -90,13 +96,23 @@ class ConfigParser {
 
   static CommandConfig _parseCommandConfig(YamlMap yaml) {
     final run = yaml['run'] as String?;
+    final preset = yaml['preset'] as String?;
 
-    if (run == null) {
-      throw FormatException('Command is missing required "run" field.');
+    if (preset != null && run != null) {
+      throw FormatException(
+        'Command cannot have both "preset" and "run".',
+      );
+    }
+
+    if (preset == null && run == null) {
+      throw FormatException(
+        'Command must have either "run" or "preset" field.',
+      );
     }
 
     return CommandConfig(
       run: run,
+      preset: preset,
       glob: yaml['glob'] as String?,
       stagedOnly: yaml['staged_only'] as bool?,
     );

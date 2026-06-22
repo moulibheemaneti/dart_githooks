@@ -30,6 +30,7 @@ Most git hook tools require installing a separate binary (Go, Node.js, etc.). `d
 ✦ Staged-only mode — run commands on staged files only
 ✦ Glob filtering — skip commands when no matching files are staged
 ✦ Works with dart, flutter, and fvm
+✦ Melos workspace support — run tests at package level via preset: melos
 ✦ Lowercase enforcement — optionally force lowercase commit messages
 ```
 
@@ -221,6 +222,35 @@ pre-commit:
 ```
 
 Command-level `staged_only` always overrides the global setting. If no staged files are found, the command is skipped automatically.
+
+---
+
+## Melos Preset
+
+If your project uses [melos](https://melos.invertase.dev/) for monorepo management, you can replace a `run` command with the `melos` preset to execute tests at the package level:
+
+```yaml
+pre-commit:
+  commands:
+    test:
+      preset: melos              # no `run` field — preset handles everything
+      staged_only: true          # optional — only packages with staged files
+```
+
+When `preset: melos` is set, the `run` field must be omitted (the parser rejects both).
+
+### How it works
+
+1. **Package discovery** — Runs `melos list --json --relative` to find all workspace packages. Supports both `melos.yaml` and `melos:` config key in `pubspec.yaml`.
+2. **Test command auto-detection** — Picks the first available: `fvm flutter test` > `flutter test` > `dart test`.
+3. **Execution** — Uses `melos exec` to run tests. The `staged_only` flag controls scope:
+
+   | `staged_only` | Behavior |
+   |---|---|
+   | `true` | Runs tests only in packages containing staged files (`melos exec --scope=pkg1 --scope=pkg2 -- ...`) |
+   | `false` | Runs tests in **all** packages (`melos exec -- ...`) |
+
+Command-level `staged_only` overrides the global `dart_husky.staged_only` setting, just like regular `run` commands.
 
 ---
 
