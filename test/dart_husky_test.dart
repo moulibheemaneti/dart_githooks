@@ -286,6 +286,18 @@ pre-commit:
       );
     });
 
+    test('unknown preset throws FormatException', () {
+      expect(
+        () => ConfigParser.parseString('''
+pre-commit:
+  commands:
+    test:
+      preset: melos_
+'''),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
     test('neither preset nor run throws FormatException', () {
       expect(
         () => ConfigParser.parseString('''

@@ -8,6 +8,7 @@ import 'config_model.dart';
 class ConfigParser {
   static const _configFileName = 'dart_husky.yaml';
   static const _globalConfigKey = 'dart_husky';
+  static const _validPresets = {'melos'};
 
   /// Parses raw YAML content as a string — useful for tests
   static GitHooksConfig parseString(String content) {
@@ -107,6 +108,12 @@ class ConfigParser {
     if (preset == null && run == null) {
       throw FormatException(
         'Command must have either "run" or "preset" field.',
+      );
+    }
+
+    if (preset != null && !_validPresets.contains(preset)) {
+      throw FormatException(
+        'Unknown preset "$preset". Available presets: ${_validPresets.join(', ')}.',
       );
     }
 
