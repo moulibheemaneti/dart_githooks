@@ -8,3 +8,6 @@ pubspec.lock
 
 # FVM Version Cache
 .fvm/
+
+# flutter_upgradex logs
+flutter_upgradex_logs.txt
