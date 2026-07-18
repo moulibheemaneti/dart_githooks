@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1](https://github.com/moulibheemaneti/dart_husky/compare/dart_husky-v1.7.0...dart_husky-v1.7.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* **ci:** update renovate github action to v46.1.19 ([#17](https://github.com/moulibheemaneti/dart_husky/issues/17)) ([609219b](https://github.com/moulibheemaneti/dart_husky/commit/609219b046469cf902a3a34e645aa4b404b5a629))
+
 ## [1.7.0](https://github.com/moulibheemaneti/dart_husky/compare/dart_husky-v1.6.0...dart_husky-v1.7.0) (2026-07-14)
 
 
