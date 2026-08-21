@@ -33,15 +33,13 @@ class HookRunner {
       await _runCommitMsgHook(hookConfig, arg);
     } else {
       // fetch staged files only if needed — glob filtering or staged_only is active
-      final needsStagedFiles =
-          config.globalConfig.stagedOnly ||
+      final needsStagedFiles = config.globalConfig.stagedOnly ||
           hookConfig.commands.values.any(
             (c) => c.stagedOnly == true || c.glob != null,
           );
 
-      final stagedFiles = needsStagedFiles
-          ? await GitUtils.getStagedFiles()
-          : <String>[];
+      final stagedFiles =
+          needsStagedFiles ? await GitUtils.getStagedFiles() : <String>[];
 
       if (hookConfig.parallel) {
         await _runParallel(
