@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.1](https://github.com/moulibheemaneti/dart_husky/compare/dart_husky-v1.8.0...dart_husky-v1.8.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* exclude deleted files from staged commands ([#19](https://github.com/moulibheemaneti/dart_husky/issues/19)) ([c8fc38c](https://github.com/moulibheemaneti/dart_husky/commit/c8fc38c1d0b724a282342060b4d6c5b1084287d4))
+
 ## [Unreleased]
 
 ### Fixed
